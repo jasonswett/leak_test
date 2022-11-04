@@ -2,7 +2,7 @@
 
 This repo demonstrates that MiniTest::Spec seems to have a bug that causes data leakage.
 
-To see the demonstration in action, repeatedly run this command:
+To see the demonstration in action, first run `docker compose up -d` and `bin/setup` and then repeatedly run this command:
 ```bash
 rails test test/models/minitest_user_test.rb
 ```
