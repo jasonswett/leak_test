@@ -1,24 +1,49 @@
-# README
+This repo demonstrates that MiniTest::Spec seems to have a bug that causes data leakage.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+To see the demonstration in action, repeatedly run this command:
+```bash
+rails test test/models/minitest_user_test.rb
+```
 
-Things you may want to cover:
+You'll see that the test outputs a user count which increments with each change.
 
-* Ruby version
+To make the buggy behavior go away, change `test/models/minitest_user_test.rb` from this:
 
-* System dependencies
+```ruby
+require "test_helper"
 
-* Configuration
+describe "user" do
+  before do
+    puts "User count: #{User.count}"
+    puts User.all.map(&:name)
+    User.create!(name: SecureRandom.hex)
+  end
 
-* Database creation
+  it "is the truth" do
+    assert true
+  end
+end
+```
 
-* Database initialization
+To this:
 
-* How to run the test suite
+```ruby
+require "test_helper"
 
-* Services (job queues, cache servers, search engines, etc.)
+class Foo;end    # This line was added
+describe Foo do  # This line was changed
+  before do
+    puts "User count: #{User.count}"
+    puts User.all.map(&:name)
+    User.create!(name: SecureRandom.hex)
+  end
 
-* Deployment instructions
+  it "is the truth" do
+    assert true
+  end
+end
+```
 
-* ...
+Now repeatedly run the test again and observe that the user count does not increment.
+
+It seems that, for whatever reason, the buggy behavior is present when what follows `describe` is a string and absent when it's a constant. It doesn't seem to matter what the constant is. The key difference seems to be constant versus string.
