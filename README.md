@@ -1,3 +1,5 @@
+# MiniTest::Spec data leakage
+
 This repo demonstrates that MiniTest::Spec seems to have a bug that causes data leakage.
 
 To see the demonstration in action, repeatedly run this command:
