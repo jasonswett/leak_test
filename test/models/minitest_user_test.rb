@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe User do
+describe "user" do
   before do
     puts "User count: #{User.count}"
     puts User.all.map(&:name)
